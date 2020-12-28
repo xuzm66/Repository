@@ -1,0 +1,542 @@
+```puml
+@startuml
+tb_log_main->tb_action_log: 一对多
+tb_log_main-->tb_action_log: 关联字段：SessionId
+tb_action_log<-->user: EngineerName <=> loginname
+@enduml
+```
+```puml
+@startuml
+actor User
+skinparam backgroundColor #EEEEBDC
+group 配置Group
+User -> 配置1
+配置1 -> 配置2 : 详情参考:\n模板配置文档
+box "Title" #LightGrey
+配置2 -> 配置3 :Apply Setup
+
+endbox
+end
+@enduml
+```
+
+v_action_log_ori数据源示例图：
+```puml
+@startuml
+(tb_log_main) as (m)
+(tb_action_log) as (a)
+(v_action_log_ori) as (o)
+(user) as (u)
+
+note "关联查询输出报表所需字段." as N2
+(m) .. N2
+N2 .. (o)
+(a) .. N2
+N2 .. (o)
+(u) .. N2
+N2 .. (o)
+@enduml
+```
+```puml
+@startuml
+scale 350 width
+[*] --> NotShooting
+state NotShooting {
+  [*] --> Idle
+  Idle --> Configuring : EvConfig
+  Configuring --> Idle : EvConfig
+}
+state Configuring {
+  [*] --> NewValueSelection
+  NewValueSelection --> NewValuePreview : EvNewValue
+  NewValuePreview --> NewValueSelection : EvNewValueRejected
+  NewValuePreview --> NewValueSelection : EvNewValueSaved
+
+  state NewValuePreview {
+     State1 -> State2
+  }
+}
+@enduml
+```
+
+```puml
+@startuml
+node "Python" {
+    [Log解析]
+}
+
+database "MySql" {
+    frame "Table" {
+        [Frame tb_action_log_all]
+    }
+}
+
+[Log解析] --> [Frame tb_action_log_all]
+@enduml
+```
+
+类图1
+```puml
+案例2：
+@startuml
+class Track
+class Media
+class Trip{
+   String tripID;
+   String tracks;
+   String medias;
+}
+Trip --> Track
+Trip --> Media
+
+interface ITripTrackCollection{
+    void start();
+    void stop();
+    void pause();
+    void destory();
+}
+class TripTrackCollection implements ITripTrackCollection{
+    Vector<LocationInfo> mLocations;
+    ExtcutorService mVecoterThread;
+    ScheduledExecutorService mDatabaseThread;
+}
+
+class TrackCollectService extends Service implements ITripTrackCollection{
+    TripTrackCollection TripTrackCollection;
+}
+TrackCollectService -->TripTrackCollection
+@enduml
+
+```
+
+类图2
+```puml
+@startuml
+
+abstract class AbstractList
+abstract AbstractCollection
+interface List
+interface Collection
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+Object[] elementData
+size()
+}
+
+enum TimeUnit {
+DAYS
+HOURS
+MINUTES
+}
+
+@enduml
+```
+
+用例图
+```puml
+@startuml
+:Main Admin: as Admin
+(Use the application) as (Use)
+
+User -> (Start)
+User --> (Use)
+
+Admin ---> (Use)
+
+note right of Admin : This is an example.
+
+note right of (Use)
+A note can also
+be on several lines
+end note
+
+note "This note is connected\nto several objects." as N2
+(Start) .. N2
+N2 .. (Use)
+@enduml
+```
+
+状态图
+```puml
+@startuml
+scale 350 width
+[*] --> NotShooting
+
+state NotShooting {
+  [*] --> Idle
+  Idle --> Configuring : EvConfig
+  Configuring --> Idle : EvConfig
+}
+
+state Configuring {
+  [*] --> NewValueSelection
+  NewValueSelection --> NewValuePreview : EvNewValue
+  NewValuePreview --> NewValueSelection : EvNewValueRejected
+  NewValuePreview --> NewValueSelection : EvNewValueSaved
+
+  state NewValuePreview {
+     State1 -> State2
+  }
+
+}
+@enduml
+```
+
+案例1：
+```puml
+@startuml
+
+package "Some Group" {
+HTTP - [First Component]
+[Another Component]
+}
+
+package "Other Groups" {
+FTP - [Second Component]
+
+[First Component] --> FTP
+}
+
+@enduml
+
+```
+案例2：
+
+```puml
+package "组件1" {
+    ["组件1.1"] - ["组件1.2"]
+    ["组件1.2"] -> ["组件2.1"]
+}
+
+node "组件2" {
+    ["组件2.1"] - ["组件2.2"]
+    ["组件2.2"] --> [负载均衡服务器]
+}
+
+cloud {
+    [负载均衡服务器] -> [逻辑服务器1]
+    [负载均衡服务器] -> [逻辑服务器2]
+    [负载均衡服务器] -> [逻辑服务器3]
+}
+
+database "MySql" {
+    folder "This is my folder" {
+        [Folder 3]
+    }
+
+    frame "Foo" {
+        [Frame 4]
+    }
+}
+
+[逻辑服务器1] --> [Folder 3]
+[逻辑服务器2] --> [Frame 4]
+[逻辑服务器3] --> [Frame 4]
+
+@enduml
+
+```
+```puml
+@startuml
+start
+:初始化;
+:创建看门狗线程;
+fork
+    #00FF00:while(1);
+    note right
+    看门狗线程
+    end note
+    repeat
+    if(>2min没喂狗) then (Y)
+        #8EE5EE:取消点;
+    endif
+    :sleep(5);
+    repeat while(1)   
+fork again
+    #HotPink:while(1);
+    note left
+    a线程
+    end note
+    repeat
+        if (注册标志==1) then (Y)
+            :喂狗;
+        else (N)
+        endif
+        :db;
+        if(检测成功?) then (Y)
+            #A020F0:获取;
+            note left
+            根据
+            end note
+            if(有d? && 未?) then (Y)
+                :clear;
+                note left
+                clear共干了4件事
+                ====
+                 * 1.kill
+                 * 2.set !!!
+                 * 3.set global  
+                 * 4.stop
+                 end note
+                if(c_m成功?) then (Y)
+                    :调m脚本;
+                    note left
+                    脚本在这里调用的
+                    end note
+                    if(调用成功?) then (Y)
+                        #A020F0:修改DONE_SUCCESS;
+                    else (N)
+                        #A020F0:修改DONE_FAIL;
+                    endif
+                else (N)
+                    #HotPink:goto while(1);
+                    detach
+                endif
+            else (N)
+            endif
+            if(注册标志==0 && >60) then(Y)
+                #8EE5EE:注册;
+                :标志=1;
+            else (N)
+            endif
+            :10min更新一次;
+            note left
+            1.保存master机器
+            否则……
+            2.实例的，
+            所以去除……
+            end note
+            :10min运行一次;
+        else (N)
+            #A020F0:获取d;
+            if(有d?) then (Y)
+                if(未?) then (Y)
+                    :"clear";
+                    if(clear成功) then (Y)
+                    else (N)
+                        #HotPink:goto while(1);
+                        detach
+                    endif
+                else (N)
+                endif
+                :重新;
+                if("检测成功?") then (N)
+                else (Y)
+                    #HotPink:goto while(1);
+                    detach
+                endif
+            else (N)
+            endif
+            if("可忽略err?") then (N)
+                #8EE5EE:取消al;
+                :标志=0;
+                #0000FF:exit(0);
+                stop
+            else (Y)
+            endif
+        endif
+        :sleep(1);
+        #HotPink:goto while(1);
+@enduml
+```
+
+
+
+
+
+[toc]
+## XXX
+### 需求描述
+- DR路径
+```
+对应DR的git路径。
+如果没有DR对应，则需要按照如下的Item进行描述。
+```
+- 目标
+- 输入
+- 逻辑
+- 输出
+- 约束
+### 概要设计
+#### 界面设计
+```
+截图并配足够的文字解释
+图片不要过大，聚焦关键点
+图片给出名称编号:
+    图 SessionForm
+    图 NewSessionForm
+下面的方法加入图片可以调整图片的宽度
+<img src="/assets/TraverseConfig.PNG" width="80%" height=80% title="Traverse配置界面"  />
+```
+#### 交互设计
+```
+时序图表达
+```
+#### 数据结构设计
+##### 目录结构
+```
+路径及名称
+树状图
+```
+##### 文件及示例
+```
+- 配置文件
+- 交互文件
+- 临时文件
+- log文件
+...
+```
+##### 重要类或数据类型
+```
+以表格形式表达
+类
+列表，字典，常量……
+```
+#### 数据库设计
+##### 库信息
+- 连接信息
+    - ip
+    - user
+    - passwd
+    - port
+- 库名
+##### 库关系
+```
+如果只有一个库可以忽略
+```
+##### 表信息
+- 表名
+- 表结构及描述
+```
+截图及描述
+```
+##### 表关系
+```
+ER图表达
+下面示例可以删除，仅做参考
+```
+|Type|	Symbol|
+|-|-|
+|Zero or One|	\|o--|
+|Exactly One|	\||--|
+|Zero or Many|	}o--|
+|One or Many|	}|--|
+```puml
+@startuml
+entity Entity01
+entity Entity02
+entity Entity03
+entity Entity04
+entity Entity05
+entity Entity06
+entity Entity07
+entity Entity08
+Entity01 }|..|| Entity02
+Entity03 }o..o| Entity04
+Entity05 ||--o{ Entity06
+Entity07 |o--|| Entity08
+@enduml
+```
+### 详细设计
+#### 代码目录结构
+```
+可以写代码的git仓库的地址以便开发人没clone. 比如工具市场的代码所在。
+组件图表达
+只写与当前功能相关的部分
+下面示例可以删除，仅做参考
+```
+```puml
+@startuml
+folder Root
+folder Sub1
+folder Sub2
+folder Sub3
+Sub1-up->Root
+Sub2-up->Root
+Sub3-up->Sub2
+@enduml
+```
+#### 类关系图
+```
+类图表达
+只写与当前功能相关的部分
+参考: https://nanyiniu.github.io/2019/06/26/2019-06-26-PlantUML%E7%B1%BB%E5%9B%BE%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/
+下面示例可以删除，仅做参考
+```
+```puml
+@startuml
+class TB1
+class TB2
+class TB3
+class TB4
+class TB5
+class IPerson
+class Persion
+class Student
+TB1 -o TB2 : 聚合
+TB3 -up-* TB2 : 组合
+TB4 -up-> TB1 : 关联
+TB5 .> TB4 : 依赖
+Persion ..|> IPerson : 实现
+Student --|> Persion : 继承
+@enduml
+```
+#### 重点代码流程图及代码示例
+- UseCase
+```
+文字描述
+```
+- 流程图
+```
+流程图表达
+1.用泳道来表达不同模块的过程
+2.用fork来表达平行的动作，但建议此种情况拆分流程图
+```
+```puml
+@startuml
+|ObjA|
+start
+:action1;
+:action2;
+|ObjB|
+:action3;
+fork
+:actionLeft;
+fork again
+:actionRight;
+endfork
+stop
+@enduml
+```
+- 代码示例
+```csharp
+多段代码示例及对应解释
+var a = 0
+```
+#### 技术推荐
+```
+在此功能中使用的值得推荐的技术点
+```
+#### 优化建议
+```
+以前或写文档时自己意识到代码有优化的空间，给出建议
+```
+#### 代码Reference
+```xml
+链接到Doxygen生成的文档，未来再做，等Doxygen生成的文档稳定版本出来
+示例:
+<details>
+    <summary>DBATEServer--代码文档</summary>
+    <details>
+        <summary>IService</summary>
+        * [IFTPService](/html/interface_d_b_a_t_e_server_1_1_i_service_1_1_i_f_t_p_service.html)
+        * [IMessageAnalyseService](/html/interface_d_b_a_t_e_server_1_1_i_service_1_1_i_message_analyse_service.html)
+</details>
+```

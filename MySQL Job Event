@@ -1,0 +1,13 @@
+DELIMITER ||
+drop event if exists partition_event ||
+create event partition_event
+on schedule every 1 day
+starts '2020-06-24 00:00:00'
+do
+BEGIN
+    call Pro_PARTITION ('db_server_dev', 'tb_action_log_all', 1, 0, 1);
+END ||
+DELIMITER ;
+
+-- 查看事件
+show events;
