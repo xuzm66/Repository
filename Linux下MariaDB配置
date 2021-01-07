@@ -1,0 +1,38 @@
+# 查看编码
+mysql -uroot -p # 登录
+show variables like "%character%";
+show variables like "%collation%";
+
+systemctl stop/start mariadb # 停止或开启MariaDB
+
+# 编辑配置
+[root@s /]# vim /etc/my.cnf
+[root@s /]# vim /etc/my.cnf.d/mysql-clients.cnf
+
+# 查看配置
+[root@s /]# cat /etc/my.cnf
+[mysqld]
+#datadir=/var/lib/mysql
+#socket=/var/lib/mysql/mysql.sock
+datadir=/data/debugbridge/database/Mysql
+socket=/data/debugbridge/database/Mysql/mysql.sock
+# init config
+init_connect='SET collation_connection = utf8_general_ci'
+init_connect='SET NAMES utf8'
+character-set-server=utf8
+collation-server=utf8_general_ci
+#skip-character-set-client-handshake
+# Disabling symbolic-links is recommended to prevent assorted security risks
+#symbolic-links=0
+
+[client]
+socket=/data/debugbridge/database/Mysql/mysql.sock
+
+# Settings user and group are ignored when systemd is used.
+# If you need to run mysqld under a different user or group,
+# customize your systemd unit file for mariadb according to the
+# instructions in http://fedoraproject.org/wiki/Systemd
+
+[mysqld_safe]
+log-error=/var/log/mariadb/mariadb.log
+pid-file=/var/run/mariadb/mariadb.pid
