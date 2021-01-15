@@ -16,3 +16,25 @@ Bug Fixed 在Debug首页点击Update Session以后退出再选择是会报错"	2
 徐志民	"1、mysql 表分区存储过程创建
 2、数据库Task Schedule 创建"	2020/12/23	18:30	20:30	2
 徐志民	DebugBridge用户Online调试数据丢失问题调研/跟踪	2020/12/24	18:30	19:30	1
+
+
+
+metting	70+
+	
+	
+dev doc	20+
+python + doc commit	100+
+code commit	300+
+	
+	
+	
+	SessionList 排序规则调整
+	Debug Bridge启动时检测MySqlconnection组件是否安装，如果没安装自动安装
+	ToolMarket 模块开发
+	SPI
+	
+	SPIimplemention review
+	AutoUpgrade
+	ParameterSingleResult
+	R0529_AR_05 工具市场设计需求(界面及注册App)
+	R0529_AR_04 工具市场设计需求(登录及跳转)
