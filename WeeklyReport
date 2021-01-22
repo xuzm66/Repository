@@ -8,3 +8,20 @@
 6、R0527串讲
 7、开发市场方案讨论
 8、双周会
+
+
+
+AutoUpgrade
+ParameterSingleResult
+SPISingleResult
+
+新增Single_ExePat log Tag
+1、ToolMarket更新
+2、SPI wait单位兼容处理
+RunFlow 增加Ori_Single Tag
+对UploadSession出现异常时，添加是否上传选项
+双周会
+UserReport工具计算“调试Count”平均值使用的“带加号数据”有偏差
+	
+Upload session的时候报错应该有一个弹窗供用户选择是否上传
+SPI协议输入件wait行单位前缺少空格报错未将对象引用
