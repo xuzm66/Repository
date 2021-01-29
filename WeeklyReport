@@ -1,3 +1,22 @@
+2021-01-29
+
+1、检测是否同一平台被两人占用并发邮件
+2、工具市场默认安装目录调整
+3、打包与发布文档
+4、双击suite 添加 tag
+5、在执行Pri_Shmoo的时候打印的tag_start是“PRI_SINGLE”
+6、ORI_SHMOO/ORI_SINGLE命令在log中打印tag时显示pattern
+7、bug Fixed 工具市场的工具在linux升级后重启还是老版本的问题
+8、bug Fixed 工具市场的工具在linux升级后重启还是老版本的问题
+9、更改Extension\ToolsMarket 目录到{CurrentUser}DebugBridge\v2\
+10、新增对单点 Shmoo 增加Tag "Primary_Single"
+11、Bug Fxied :当用户先点击输入件确认再点击DVC_Check按钮时，WaveForm信息验证不正确
+12、发布评审
+13、DebugBridge打包发布文档
+14、MySql 安装文档整理
+
+
+
 1、IRight 权限新增AE Role验证
 2、WaveForm 文档Review
 3、Parameter 文档Review
