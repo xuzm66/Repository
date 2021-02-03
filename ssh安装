@@ -14,25 +14,25 @@ OpenSSH Authentication Agent
 #### 添加用户
 以管理员用户打开cmd或PowerShell
 ```
-net user debugbridge huawei@123 /add
-net user debugbridge huawei@123 /active
+net user account pwd /add
+net user account pwd /active
 ```
 #### 创建服务器目录
 创建目录
-- C:\Users\debugbridge\DebugSession
-- D:\SSHServer\DebugSession
+- C:\Users\xxx
+- D:\SSHServer\xxx
 ## 重定向目标目录
-- 将C:\Users\debugbridge\DebugSession创建成一个链接指向D:\SSHServer\DebugSession
+- 将C:\Users\xxxx创建成一个链接指向D:\SSHServer\xxxx
 - 创建链接方法
 ```
 mklink /J {链接文件名} {目标目录路径}
 ```
 ## 测试服务器信息
 使用任何的ssh客户端软件测试:
-    - 用户名: debugbridge, 
-    - 密码: huawei@123, 
+    - 用户名: xxx, 
+    - 密码: xxx, 
     - IP: {真实的配置的机器的IP地址，本机为127.0.0.1}
-    - 登录后主目录: C:\Users\debugbridge\DebugSession
+    - 登录后主目录: C:\Users\xxxx
 ### 配置服务(参考)
 官方文档: https://docs.microsoft.com/zh-cn/windows-server/administration/openssh/openssh_server_configuration
 配置文件解释: https://www.cnblogs.com/diantong/p/10859495.html
