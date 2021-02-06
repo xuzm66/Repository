@@ -1,3 +1,14 @@
+2021-02-06
+
+1、数据库脚本整理
+2、Debug Bridge Local版本创建及修改、测试、发布
+3、支持外部用户对Debug Bridge Local版环境搭建
+4、ToolsMarket 文档整理及Review
+5、ToolsMarket 添加数据权限认证
+6、Debug Bridge公共邮箱申请
+
+
+
 2021-01-29
 
 1、检测是否同一平台被两人占用并发邮件
