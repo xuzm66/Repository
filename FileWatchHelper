@@ -1,0 +1,213 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DBInfrastructure.Utility
+{
+    /// <summary>
+    /// 监听文件修改委托
+    /// </summary>
+    /// <param name="changedType"></param>
+    /// <param name="filePath"></param>
+    public delegate void WatchFileChangedEventHandler(WatchFileChangedType changedType, string filePath);
+
+    /// <summary>
+    /// 监听文件夹修改委托
+    /// </summary>
+    /// <param name="changedType"></param>
+    /// <param name="folderPath"></param>
+    public delegate void WatchFolderChangedEventHandler(WatchFileChangedType changedType, string folderPath);
+
+    /// <summary>
+    /// 文件/文件夹监听服务
+    /// </summary>
+    public class FileWatchHelper
+    {
+        #region 属性
+        /// <summary>
+        /// 监听文件夹路径集合
+        /// </summary>
+        List<string> WatchFolderPathList = new List<string>();
+
+        /// <summary>
+        /// 监听文件路径集合
+        /// </summary>
+        List<string> WatchFilePathList = new List<string>();
+
+        /// <summary>
+        /// 监听句柄集合
+        /// </summary>
+        List<FileSystemWatcher> WatcherList = new List<FileSystemWatcher>();
+
+        /// <summary>
+        /// 监听文件修改事件
+        /// </summary>
+        public event WatchFileChangedEventHandler WatchFileChangedEvent;
+
+        /// <summary>
+        /// 监听文件夹修改事件
+        /// </summary>
+        public event WatchFolderChangedEventHandler WatchFolderChangedEvent;
+        #endregion
+
+        #region 公开事件
+        /// <summary>
+        /// 增加监听文件
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void WatchFile(string filePath)
+        {
+            if (!WatchFilePathList.Exists(x => x.IsEquals(filePath)))
+                WatchFilePathList.Add(filePath);
+            WatchFolder(Path.GetDirectoryName(filePath));
+        }
+
+        /// <summary>
+        /// 增加监听文件夹
+        /// </summary>
+        /// <param name="folderPath"></param>
+        public void WatchFolder(string folderPath)
+        {
+            if (WatchFolderPathList.Exists(x => x.IsEquals(folderPath)))
+                return;
+            WatchFolderPathList.Add(folderPath);
+            var fileWatch = new FileSystemWatcher(folderPath);
+            fileWatch.Changed += WatchChanged;
+            fileWatch.Deleted += WatchDeleted;
+            fileWatch.Created += WatchCreated;
+            fileWatch.Renamed += WatchRenamed;
+            fileWatch.EnableRaisingEvents = true;
+            WatcherList.Add(fileWatch);
+        }
+
+        /// <summary>
+        /// 取消文件的监听
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void RemoveWatchFile(string filePath)
+        {
+            if (!WatchFilePathList.Exists(x => x.IsEquals(filePath)))
+                return;
+            WatchFilePathList.Remove(filePath);
+            var folderPath = Path.GetDirectoryName(filePath);
+            if (!WatchFilePathList.Exists(x => Path.GetDirectoryName(filePath).IsEquals(folderPath)))
+                RemoveWatchFolder(folderPath);
+        }
+
+        /// <summary>
+        /// 取消文件夹的监听
+        /// </summary>
+        /// <param name="folderPath"></param>
+        public void RemoveWatchFolder(string folderPath)
+        {
+            if (!WatchFolderPathList.Exists(x => x.IsEquals(folderPath)))
+                return;
+            WatchFolderPathList.Remove(folderPath);
+            var watcher = WatcherList.Find(x => x.Path == folderPath);
+            if (watcher == null) return;
+            watcher.EnableRaisingEvents = false;
+            watcher.Dispose();
+        }
+
+        /// <summary>
+        /// 清除监控
+        /// </summary>
+        public void ClearWatch()
+        {
+            WatcherList.ForEach((watcher) =>
+            {
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose();
+            });
+            WatchFilePathList.Clear();
+            WatchFolderPathList.Clear();
+        }
+        #endregion
+
+        #region 私有事件
+        /// <summary>
+        /// 监听重命名事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WatchRenamed(object sender, RenamedEventArgs e)
+        {
+            UnityChanged(sender as FileSystemWatcher, WatchFileChangedType.Renamed, e.OldFullPath);
+        }
+
+        /// <summary>
+        /// 监听创建事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WatchCreated(object sender, FileSystemEventArgs e)
+        {
+            UnityChanged(sender as FileSystemWatcher, WatchFileChangedType.Created, e.FullPath);
+        }
+
+        /// <summary>
+        /// 监听删除事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WatchDeleted(object sender, FileSystemEventArgs e)
+        {
+            UnityChanged(sender as FileSystemWatcher, WatchFileChangedType.Deleted, e.FullPath);
+        }
+
+        /// <summary>
+        /// 监听修改事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WatchChanged(object sender, FileSystemEventArgs e)
+        {
+            UnityChanged(sender as FileSystemWatcher, WatchFileChangedType.Changed, e.FullPath);
+        }
+
+        /// <summary>
+        /// 汇总修改
+        /// </summary>
+        /// <param name="changeType"></param>
+        /// <param name="fullPath"></param>
+        private void UnityChanged(FileSystemWatcher fileWatcher, WatchFileChangedType changeType, string fullPath)
+        {
+            fileWatcher.EnableRaisingEvents = false;
+            //文件监听
+            if (WatchFilePathList.Exists(x => x.IsEquals(fullPath)))
+                WatchFileChangedEvent?.Invoke(changeType, fullPath);
+
+            //文件夹监听
+            if (WatchFolderPathList.Exists(x => x.IsEquals(fullPath)))
+                WatchFolderChangedEvent?.Invoke(changeType, fullPath);
+            fileWatcher.EnableRaisingEvents = true;
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// 监听文件属性修改类型
+    /// </summary>
+    public enum WatchFileChangedType
+    {
+        /// <summary>
+        /// 被修改
+        /// </summary>
+        Changed,
+        /// <summary>
+        /// 被删除
+        /// </summary>
+        Deleted,
+        /// <summary>
+        /// 被改名
+        /// </summary>
+        Renamed,
+        /// <summary>
+        /// 新增
+        /// </summary>
+        Created
+    }
+}
