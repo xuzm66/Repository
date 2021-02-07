@@ -1,0 +1,157 @@
+using DBInfrastructure.IService;
+using DBInfrastructure.Utility;
+using Renci.SshNet;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DBInfrastructure.Service
+{
+    public class SshWindowsService : ISshService
+    {
+        /// <summary>
+        /// SFTP接口
+        /// </summary>
+        protected IFTPService _IFtpService;
+        /// <summary>
+        /// ssh客户端
+        /// </summary>
+        protected SshClient _SSHClient;
+        public string WorkDirectory => _IFtpService.WorkDirectory;
+
+        public void Check()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Connect(string ip, int port, string userName, string password, int timeout = 5000)
+        {
+            Dispose();
+            _SSHClient = new SshClient(ip, port, userName, password);
+            _SSHClient.Connect();
+
+            _IFtpService = new SFTPService();
+            _IFtpService.Connect(ip, port, userName, password);
+
+            return _SSHClient.IsConnected;
+        }
+        /// <summary>
+        /// Windows服务器复制文件操作
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="targetFilePath"></param>
+        public void CopyFile(string filePath, string targetFilePath)
+        {
+            string sessionName = Path.GetFileNameWithoutExtension(filePath);
+            string newSessionName = Path.GetFileNameWithoutExtension(targetFilePath);
+            string targetDir = Path.GetDirectoryName(targetFilePath);
+            //创建dos命令
+            string dosCmd = $@"cd {targetDir} " + "\r\n" + $"copy {sessionName}.zip {newSessionName}.zip";
+            //生成bat文件
+            string path = CreateBatFile(dosCmd, "bat.bat");
+            //上传bat文件
+            _IFtpService.Upload(path, _IFtpService.WorkDirectory, "bat.bat");
+            //删除本地bat文件
+            File.Delete(path);
+            //执行命令
+            ExeCmd("bat.bat");
+        }
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="file"></param>
+        public void DeleteFile(string file)
+        {
+            _IFtpService.DeleteFile(file);
+        }
+        public void Dispose()
+        {
+            if (_SSHClient == null) return;
+            if (_SSHClient.IsConnected)
+                _SSHClient.Disconnect();
+            _SSHClient.Dispose();
+            _SSHClient = null;
+        }
+
+        public void Download(string remotePath, string localPath)
+        {
+            _IFtpService.Download(remotePath, localPath);
+        }
+
+        /// <summary>
+        /// 执行命令
+        /// </summary>
+        /// <param name="cmdTxt"></param>
+        public string ExeCmd(string cmdTxt)
+        {
+            string msg = string.Empty;
+            using (var cmd = _SSHClient.CreateCommand(cmdTxt))
+            {
+                msg = cmd.Execute();
+
+                if (!string.IsNullOrEmpty(cmd.Error))
+                {
+                    msg = cmd.Error;
+                }
+            }
+
+            return msg;
+        }
+
+        public List<string> GetList(string remotePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetTimeout(int timeout)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetWorkingDirectory(string path)
+        {
+            _IFtpService.SetWorkingDirectory(path);
+        }
+
+        public void Upload(string srcPath, string targetFolder, string targetFileName = null)
+        {
+            _IFtpService.Upload(srcPath, targetFolder, targetFileName);
+        }
+
+        /// <summary>
+        /// 创建Bat文件
+        /// </summary>
+        /// <param name="dosCmd"></param>
+        /// <param name="batName"></param>
+        /// <returns></returns>
+        private string CreateBatFile(string dosCmd, string batName)
+        {
+            try
+            {
+                if (File.Exists(Path.Combine(PathHelper.GenerateFolder, batName)))
+                {
+                    File.Delete(Path.Combine(PathHelper.GenerateFolder, batName));
+                }
+                using (FileStream fs = new FileStream(Path.Combine(PathHelper.GenerateFolder, batName), FileMode.Create))
+                {
+                    byte[] arryDosCmd = Encoding.Default.GetBytes(dosCmd);
+                    fs.Write(arryDosCmd, 0, arryDosCmd.Length);
+                }
+                return Path.Combine(PathHelper.GenerateFolder, batName);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("创建bat文件失败，原因：{0}", ex.Message)); ;
+            }
+        }
+
+        //public void setWorkDir(string path)
+        //{
+        //    _IFtpService.setWorkDir(path);
+        //}
+    }
+}
