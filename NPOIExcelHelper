@@ -1,0 +1,411 @@
+using NPOI.HSSF.UserModel;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DBInfrastructure.Utility
+{
+    /// <summary>
+    /// NOPI操作Excel
+    /// </summary>
+    public static class NPOIExcelHelper
+    {
+        /// <summary>
+        /// 将DataTable转CSV字符串
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static string ConvertToCSV(System.Data.DataTable dt)
+        {
+            if (dt == null || dt.Columns.Count == 0) return "";
+
+            var str = "";
+
+            var colsCount = dt.Columns.Count;
+
+            var rowsCount = dt.Rows.Count;
+
+            for (int i = 0; i < colsCount; i++)
+            {
+                str += $"{dt.Columns[i].ColumnName},";
+            }
+
+            str = str.TrimEnd(',');
+
+            if (rowsCount > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    str += Environment.NewLine;
+
+                    var rowData = "";
+
+                    var row = dt.Rows[i];
+                    for (int j = 0; j < colsCount; j++)
+                    {
+                        rowData += row[j].ToString() + ",";
+                    }
+
+                    rowData = rowData.TrimEnd(',');
+                    str += rowData;
+                }
+            }
+            return str;
+        }
+
+        /// <summary>
+        /// Excel转DataTable
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static List<DataTable> ConvertToDataTable(string filePath)
+        {
+            List<DataTable> listDt = new List<DataTable>();
+
+            IWorkbook workbook;
+            string fileExt = Path.GetExtension(filePath).ToLower();
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                if (fileExt == ".xlsx") { workbook = new XSSFWorkbook(fs); } else if (fileExt == ".xls") { workbook = new HSSFWorkbook(fs); } else { workbook = null; }
+
+                if (workbook == null) { return null; }
+
+                for (int j = 0; j < workbook.NumberOfSheets; j++)
+                {
+                    DataTable dt = new DataTable();
+
+                    ISheet sheet = workbook.GetSheetAt(j);
+
+                    //表头  
+                    IRow header = sheet.GetRow(sheet.FirstRowNum);
+
+                    if (header == null) continue;
+
+                    List<int> columns = new List<int>();
+                    for (int i = 0; i < header.LastCellNum; i++)
+                    {
+                        object obj = GetValueType(header.GetCell(i));
+                        if (obj == null || obj.ToString() == string.Empty)
+                        {
+                            dt.Columns.Add(new DataColumn("Columns" + i.ToString()));
+                        }
+                        else
+                            dt.Columns.Add(new DataColumn(obj.ToString()));
+                        columns.Add(i);
+                    }
+                    //数据  
+                    for (int i = sheet.FirstRowNum + 1; i <= sheet.LastRowNum; i++)
+                    {
+                        DataRow dr = dt.NewRow();
+                        bool hasValue = false;
+                        foreach (int k in columns)
+                        {
+                            dr[k] = GetValueType(sheet.GetRow(i).GetCell(k));
+                            if (dr[k] != null && dr[k].ToString() != string.Empty)
+                            {
+                                hasValue = true;
+                            }
+                        }
+                        if (hasValue)
+                        {
+                            dt.Rows.Add(dr);
+                        }
+                    }
+
+                    listDt.Add(dt);
+                }
+            }
+
+            return listDt;
+        }
+
+        private static object GetValueType(ICell cell)
+        {
+            if (cell == null)
+                return null;
+            switch (cell.CellType)
+            {
+                case CellType.Blank:
+                    return null;
+                case CellType.Boolean:
+                    return cell.BooleanCellValue;
+                case CellType.Numeric:
+                    return cell.NumericCellValue;
+                case CellType.String:
+                    return cell.StringCellValue;
+                case CellType.Error:
+                    return cell.ErrorCellValue;
+                case CellType.Formula:
+                default:
+                    return "=" + cell.CellFormula;
+            }
+        }
+
+        /// <summary>
+        /// 根据文件类型获取工作簿
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static IWorkbook GetWorkbook(string filePath)
+        {
+            IWorkbook workbook = null;
+
+            string fileExt = Path.GetExtension(filePath).ToLower();
+            if (fileExt == ".xlsx") { workbook = new XSSFWorkbook(); } else if (fileExt == ".xls") { workbook = new HSSFWorkbook(); } else { workbook = null; }
+
+            return workbook;
+        }
+
+        /// <summary>
+        /// 导出Excel
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="listExcelModel"></param>
+        public static void Export(string filePath, params ExcelExportModel[] listExcelModel)
+        {
+            if (listExcelModel.Length == 0) return;
+
+            IWorkbook workbook = GetWorkbook(filePath);
+
+            if (workbook == null) { return; }
+
+            ICell cell = null;
+
+            var borderStyle = workbook.GetCellStyle(true);
+
+            var normalStyle = workbook.GetCellStyle();
+
+            for (int i = 0; i < listExcelModel.Length; i++)
+            {
+                var dt = listExcelModel[i].SheetData;
+
+                var sheetName = string.IsNullOrEmpty(listExcelModel[i].SheetName) ? $"Sheet{i + 1}" : listExcelModel[i].SheetName;
+
+                if (dt != null /*&& dt.Rows.Count > 0*/)
+                {
+                    ISheet sheet = workbook.CreateSheet(sheetName);//创建Sheet表 
+
+                    int rowCount = dt.Rows.Count;//行数  
+                    int columnCount = dt.Columns.Count;//列数  
+
+                    //设置列头  
+                    IRow row = sheet.CreateRow(0);//excel第一行设为列头  
+                    for (int c = 0; c < columnCount; c++)
+                    {
+                        cell = row.CreateCell(c);
+                        cell.CellStyle = borderStyle;
+                        cell.SetCellValue(dt.Columns[c].ColumnName);
+                        sheet.AutoSizeColumn(c);
+                    }
+
+                    //设置每行每列的单元格
+                    for (int j = 0; j < rowCount; j++)
+                    {
+                        row = sheet.CreateRow(j + 1);
+                        for (int k = 0; k < columnCount; k++)
+                        {
+                            cell = row.CreateCell(k);//excel第二行开始写入数据  
+                            cell.SetCellValue(dt.Rows[j][k].ToSafeString());
+                            cell.CellStyle = normalStyle;
+                        }
+                    }
+
+                    for (int columnNum = 0; columnNum < columnCount; columnNum++)
+                    {
+                        int columnWidth = sheet.GetColumnWidth(columnNum) / 256;//获取当前列宽度  
+                        for (int rowNum = 1; rowNum <= sheet.LastRowNum; rowNum++)//在这一列上循环行  
+                        {
+                            IRow currentRow = sheet.GetRow(rowNum);
+                            ICell currentCell = currentRow.GetCell(columnNum);
+                            int length = Encoding.UTF8.GetBytes(currentCell.ToString()).Length;//获取当前单元格的内容宽度  
+                            if (columnWidth < length + 1)
+                            {
+                                columnWidth = length + 1;
+                            }//若当前单元格内容宽度大于列宽，则调整列宽为当前单元格宽度，后面的+1是我人为的将宽度增加一个字符  
+                        }
+                        //sheet.SetColumnWidth(columnNum, columnWidth * 256);
+                    }
+                }
+            }
+
+            SaveExcelFile(workbook, filePath);
+        }
+        /// <summary>
+        /// 导出Excel 单元格自适应
+        /// </summary>
+        /// <param name="dt"></param>
+        public static void ExportDataTable(string filePath, params DataTable[] dts)
+        {
+            string exportedExcelFullName = filePath;
+            XSSFWorkbook workBook = new XSSFWorkbook();
+            foreach (DataTable dt in dts)
+            {
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    ISheet firstSheet = workBook.CreateSheet(dt.TableName);
+                    IRow headerRow = firstSheet.CreateRow(0);
+
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        ICell headerCell = headerRow.CreateCell(i);
+                        headerCell.SetCellValue(dt.Columns[i].ColumnName?.ToString());
+                    }
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        IRow dataRow = firstSheet.CreateRow(i + 1);
+                        for (int j = 0; j < dt.Columns.Count; j++)
+                        {
+                            ICell dataCell = dataRow.CreateCell(j);
+                            dataCell.SetCellValue(dt.Rows[i][j]?.ToString());
+                        }
+                    }
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        firstSheet.AutoSizeColumn(i);
+                    }
+                }
+            }
+            using (FileStream excelStream = File.Create(exportedExcelFullName))
+            {
+                workBook.Write(excelStream);
+            }
+
+        }
+
+        public static void SaveExcelFile(IWorkbook workbook, string filePath)
+        {
+            MemoryStream stream = new MemoryStream();
+            workbook.Write(stream);
+            var buf = stream.ToArray();
+
+            //保存为Excel文件  
+            using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(buf, 0, buf.Length);
+                fs.Flush();
+            }
+        }
+
+        /// <summary>
+        /// 合并单元格
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="firstRow"></param>
+        /// <param name="lastRow"></param>
+        /// <param name="firstCol"></param>
+        /// <param name="lastCol"></param>
+        public static void MergeCell(IWorkbook workbook, ISheet sheet, int firstRow, int lastRow, int firstCol, int lastCol, short colorIndex)
+        {
+            var region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+
+            var index = sheet.AddMergedRegion(region);
+
+            ICellStyle style = workbook.CreateCellStyle();
+            style.WrapText = true;
+            //style.BorderBottom = BorderStyle.Thin;
+            //style.BorderLeft = BorderStyle.Thin;
+            //style.BorderRight = BorderStyle.Thin;
+            //style.BorderTop = BorderStyle.Thin;
+            //style.BottomBorderColor = HSSFColor.Black.Index;
+            //style.LeftBorderColor = HSSFColor.Black.Index;
+            //style.RightBorderColor = HSSFColor.Black.Index;
+            //style.TopBorderColor = HSSFColor.Black.Index;
+            style.FillForegroundColor = colorIndex;
+            style.FillPattern = FillPattern.SolidForeground;
+            style.VerticalAlignment = VerticalAlignment.Center;
+            style.Alignment = HorizontalAlignment.Center;
+
+            for (int i = region.FirstRow; i <= region.LastRow; i++)
+            {
+                IRow row = sheet.GetRow(i);
+
+                if (row == null)
+                    row = sheet.CreateRow(i);
+
+                for (int j = region.FirstColumn; j <= region.LastColumn; j++)
+                {
+                    ICell singleCell = HSSFCellUtil.GetCell(row, j);
+                    singleCell.CellStyle = style;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取单元格样式
+        /// </summary>
+        /// <param name="book"></param>
+        /// <returns></returns>
+        public static ICellStyle GetCellStyle(this IWorkbook book, bool isBold = false, bool isSetBoder = false)
+        {
+            var style = book.CreateCellStyle();
+
+            if (isSetBoder)
+            {
+                style.BorderBottom = BorderStyle.Thin;
+                style.BorderLeft = BorderStyle.Thin;
+                style.BorderRight = BorderStyle.Thin;
+                style.BorderTop = BorderStyle.Thin;
+                style.BottomBorderColor = HSSFColor.Grey25Percent.Index;
+                style.TopBorderColor = HSSFColor.Grey25Percent.Index;
+                style.LeftBorderColor = HSSFColor.Grey25Percent.Index;
+                style.RightBorderColor = HSSFColor.Grey25Percent.Index;
+            }
+            style.WrapText = true;
+
+            var font = book.CreateFont();
+
+            font.IsBold = isBold;
+
+            font.FontHeightInPoints = 12;
+
+            font.FontName = "Calibri";
+
+            style.SetFont(font);
+
+            return style;
+        }
+
+        /// <summary>
+        /// 获取行 不存在则创建
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public static IRow GetRowEx(this ISheet sheet, int rowIndex)
+        {
+            var row = sheet.GetRow(rowIndex);
+
+            if (row == null)
+                row = sheet.CreateRow(rowIndex);
+
+            return row;
+        }
+    }
+
+    public class ExcelExportModel
+    {
+        /// <summary>
+        /// 工作簿名称(可为空)
+        /// </summary>
+        public string SheetName { get; set; }
+
+        /// <summary>
+        /// 工作簿数据
+        /// </summary>
+        public DataTable SheetData { get; set; }
+
+        public static implicit operator ExcelExportModel(DataTable dt)
+        {
+            return new ExcelExportModel() { SheetData = dt };
+        }
+    }
+}
