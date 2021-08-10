@@ -1,0 +1,191 @@
+
+--邮件配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'EmailSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886455809 ,
+              NULL ,
+              N'邮件配置' ,
+              N'EmailSetting' ,
+              N'{
+	"url":"http://w01jdeoa02/Mai1Service/api/Emai1Sender/SendEnail",
+	"AppId":" App1",
+	"AppSecret":"7A812040-93F0-49D5-98ED-8AB740DBDFA3"
+}'
+            );
+
+GO
+
+
+--ACD-Logs查询接口配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'QueryACDLogsSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886455810 ,
+              NULL ,
+              N'ACD-Logs查询接口配置' ,
+              N'QueryACDLogsSetting' ,
+              N'https://w01dsweb0101.pharmatechs.com:44388/api/ACDAalculate/query_logs'
+            );
+GO
+
+
+--获取用户笔记本接口配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'GetNoteBookSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886455001 ,
+              NULL ,
+              N'获取用户笔记本接口配置' ,
+              N'GetNoteBookSetting' ,
+              N'{
+	"Url":"http://10.111.12.136:44302/api/notebook/getnotebook",
+	"AppId":"MSD",
+	"AppSecret":"bd8010fb-8fdc-4051-a50e-77d2e16a97cf"
+}'
+            );
+GO
+
+--ACD-数据插入接口配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'InsertACDLogsSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886450001 ,
+              NULL ,
+              N'ACD-数据插入接口配置' ,
+              N'InsertACDLogsSetting' ,
+              N'https://xxxxxx:88/api/ACDAalculate/insert_acddata'
+            );
+GO
+
+
+--ACD-加密接口配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'ACDEncryptSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886450002 ,
+              NULL ,
+              N'ACD-加密接口配置' ,
+              N'ACDEncryptSetting' ,
+              N'https://xxxxxx:88/api/ACDAalculateWeb/encrypt_param'
+            );
+GO
+
+
+--ACD-理化常数查询页面配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'ACDQueryPageSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886450003 ,
+              NULL ,
+              N'ACD-理化常数查询页面配置' ,
+              N'ACDQueryPageSetting' ,
+              N'https://xxxxxx:86/MainPage.aspx'
+            );
+GO
+
+
+--化合物查询Token接口配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'CompoundQueryTokenSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886455002 ,
+              NULL ,
+              N'化合物查询Token接口配置' ,
+              N'CompoundQueryTokenSetting' ,
+              N'{
+	"url":"https://xxxxx:8001/connect/token",
+	"grant_type":"client_credentials",
+	"client_id":"GatewayFirstClient",
+	"client_secret":"yilezhu123"
+}'
+            );
+GO
+
+
+--化合物属性查询接口配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'GetStructuresPropsSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886455003 ,
+              NULL ,
+              N'化合物属性查询接口配置' ,
+              N'GetStructuresPropsSetting' ,
+              N'http://xxxxx:5003/wuxiMolApi/GetStructuresProps'
+            );
+GO
+
+--结构式转换接口配置
+IF NOT EXISTS ( SELECT  1
+                FROM    dbo.Setting
+                WHERE   [Key] = N'ConvertStructSetting' )
+    INSERT  [dbo].[Setting]
+            ( [Id] ,
+              [SubsystemCode] ,
+              [Name] ,
+              [Key] ,
+              [Value]
+            )
+    VALUES  ( 1404707637886455004 ,
+              NULL ,
+              N'结构式转换接口配置' ,
+              N'ConvertStructSetting' ,
+              N'http://xxxxx:5003/wuxiMolApi/ConvertStruct'
+            );
+GO
