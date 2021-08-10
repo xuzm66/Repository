@@ -1,0 +1,696 @@
+
+--News 表添加是否启用字段
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[News]')
+                        AND name = 'Active' )
+    BEGIN
+        ALTER TABLE dbo.News ADD Active BIT NOT NULL DEFAULT 0;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'是否启用', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'News',
+            @level2type = N'COLUMN', @level2name = N'Active';
+    END;
+GO
+
+--News 表删除字段SubSystemName
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[News]')
+                        AND name = 'SubSystemName' )
+    BEGIN
+        ALTER TABLE dbo.News DROP COLUMN SubSystemName;
+    END;
+GO
+
+--News 表删除字段SiteName
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[News]')
+                        AND name = 'SiteName' )
+    BEGIN
+        ALTER TABLE dbo.News DROP COLUMN SiteName;
+    END;
+GO
+
+--News 表SiteId字段修改为非空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[News]')
+                        AND name = 'SiteId' )
+    BEGIN
+        ALTER TABLE dbo.News ALTER COLUMN SiteId BIGINT NOT NULL;
+    END;
+GO
+
+--News 表CreatedUserId字段修改为非空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[News]')
+                        AND name = 'CreatedUserId' )
+    BEGIN
+        ALTER TABLE dbo.News ALTER COLUMN CreatedUserId BIGINT NOT NULL;
+    END;
+GO
+
+--QcSample 表NotebookNum字段修改为可空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QcSample]')
+                        AND name = 'NotebookNum' )
+    BEGIN
+        ALTER TABLE dbo.QcSample ALTER COLUMN NotebookNum nvarchar(50) NULL;
+    END;
+GO
+
+--QcSample 表PageNum字段修改为可空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QcSample]')
+                        AND name = 'PageNum' )
+    BEGIN
+        ALTER TABLE dbo.QcSample ALTER COLUMN PageNum nvarchar(50) NULL;
+    END;
+GO
+
+--QcSample 表BatchNum字段修改为可空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QcSample]')
+                        AND name = 'BatchNum' )
+    BEGIN
+        ALTER TABLE dbo.QcSample ALTER COLUMN BatchNum nvarchar(50) NULL;
+    END;
+GO
+--QcSample 表CompoundID字段修改为可空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QcSample]')
+                        AND name = 'CompoundID' )
+    BEGIN
+        ALTER TABLE dbo.QcSample ALTER COLUMN CompoundID nvarchar(50) NULL;
+    END;
+GO
+
+--QcSample 表ProjectID字段修改为可空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QcSample]')
+                        AND name = 'ProjectID' )
+    BEGIN
+        ALTER TABLE dbo.QcSample ALTER COLUMN ProjectID nvarchar(50) NULL;
+    END;
+GO
+
+
+--MsdDeliveryInfo 表添加添加注册文档的人
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[MsdDeliveryInfo]')
+                        AND name = 'AddRegistrationDocUserId' )
+    BEGIN
+        ALTER TABLE dbo.MsdDeliveryInfo ADD AddRegistrationDocUserId bigint  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'添加注册文档的人', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'MsdDeliveryInfo',
+            @level2type = N'COLUMN', @level2name = N'AddRegistrationDocUserId';
+    END;
+GO
+
+--MsdDeliveryInfo 表添加添加注册文档的人
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[MsdDeliveryInfo]')
+                        AND name = 'AddRegistrationDocUser' )
+    BEGIN
+        ALTER TABLE dbo.MsdDeliveryInfo ADD AddRegistrationDocUser nvarchar(50)  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'添加注册文档的人', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'MsdDeliveryInfo',
+            @level2type = N'COLUMN', @level2name = N'AddRegistrationDocUser';
+    END;
+GO
+
+--MsdDeliveryInfo 表添加添加注册文档的日期
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[MsdDeliveryInfo]')
+                        AND name = 'AddRegistrationDocTime' )
+    BEGIN
+        ALTER TABLE dbo.MsdDeliveryInfo ADD AddRegistrationDocTime datetime  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'添加注册文档的日期', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'MsdDeliveryInfo',
+            @level2type = N'COLUMN', @level2name = N'AddRegistrationDocTime';
+    END;
+GO
+
+--MsdDeliveryInfo 表添加报关日期
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[MsdDeliveryInfo]')
+                        AND name = 'DeclarationDate' )
+    BEGIN
+        ALTER TABLE dbo.MsdDeliveryInfo ADD DeclarationDate datetime  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'报关日期', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'MsdDeliveryInfo',
+            @level2type = N'COLUMN', @level2name = N'DeclarationDate';
+    END;
+GO
+
+--MsdDeliveryInfo 表添加发货日期
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[MsdDeliveryInfo]')
+                        AND name = 'ShippingTime' )
+    BEGIN
+        ALTER TABLE dbo.MsdDeliveryInfo ADD ShippingTime datetime  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'发货日期', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'MsdDeliveryInfo',
+            @level2type = N'COLUMN', @level2name = N'ShippingTime';
+    END;
+GO
+
+ ALTER TABLE MsdBottleInfo alter column TareAmount decimal(18,5) not NULL;
+
+--Machine 表添加字段
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'P95' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD P95 nvarchar(50)  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'P95', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'P95';
+    END;
+GO
+
+
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'P90' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD P90 nvarchar(50)  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'P90', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'P90';
+    END;
+GO
+
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'Pqt' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD Pqt nvarchar(50)  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'Pqt', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'Pqt';
+    END;
+GO
+
+-- FizerProject 项目配置信息
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'FIZERProject' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD FIZERProject nvarchar(50)  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'FIZERProject', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'FIZERProject';
+    END;
+GO
+
+-- 模板偏差值
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'MB' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD MB nvarchar(50)  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'MB', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'MB';
+    END;
+GO
+
+-- 岛津截取棒状图行数
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'DJ' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD DJ nvarchar(50)  NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'DJ', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'DJ';
+    END;
+GO
+
+--Desc NMR 仪器新增和粗品需求变更新增
+
+--OneDimensionalDispose
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'OneDimensionalDispose' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD OneDimensionalDispose BIT NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'一维Dispose状态可用', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'OneDimensionalDispose';
+    END;
+GO
+
+--MultiDimensionalDisposeStatus
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'MultiDimensionalDisposeStatus' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD MultiDimensionalDisposeStatus BIT NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'多维Dispose状态可用', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'MultiDimensionalDisposeStatus';
+    END;
+GO
+
+--MultiDimensionalHolderStartNo
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'MultiDimensionalHolderStartNo' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD MultiDimensionalHolderStartNo int NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'多维起始孔位号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'MultiDimensionalHolderStartNo';
+    END;
+GO
+
+--MultiDimensionalHolderEndNo
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'MultiDimensionalHolderEndNo' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD MultiDimensionalHolderEndNo int NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'多维终止孔位号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'MultiDimensionalHolderEndNo';
+    END;
+GO
+
+--OneDimensionalHolderStartNo
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'OneDimensionalHolderStartNo' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD OneDimensionalHolderStartNo int NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'一维起始孔位号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'OneDimensionalHolderStartNo';
+    END;
+GO
+
+--OneDimensionalHolderEndNo
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'OneDimensionalHolderEndNo' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD OneDimensionalHolderEndNo int NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'一维终止孔位号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'OneDimensionalHolderEndNo';
+    END;
+GO
+
+--IsSupMultiDimensional
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'IsSupMultiDimensional' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD IsSupMultiDimensional bit NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'是否支持多维', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'IsSupMultiDimensional';
+    END;
+GO
+
+--IsSupOneDimensional
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'IsSupOneDimensional' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD IsSupOneDimensional bit NULL DEFAULT 0;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'是否支持一维', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'IsSupOneDimensional';
+    END;
+GO
+
+--MachineKind
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'MachineKind' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD MachineKind nvarchar(50) NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'仪器类型', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'MachineKind';
+    END;
+GO
+
+--LastHolderId
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'LastHolderId' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD LastHolderId bigint NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'最近使用的孔位Id', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'LastHolderId';
+    END;
+GO
+
+--LastHolder
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'LastHolder' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD LastHolder nvarchar(50) NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'最近使用的孔位', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'LastHolder';
+    END;
+GO
+
+--CpBizType
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[Machine]')
+                        AND name = 'CpBizType' )
+    BEGIN
+        ALTER TABLE dbo.Machine ADD CpBizType nvarchar(50) NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'粗品仪器业务类型(字典)', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'Machine',
+            @level2type = N'COLUMN', @level2name = N'CpBizType';
+    END;
+GO
+
+ --User 表添加字段
+
+--LabRoom
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'LabRoom' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD LabRoom nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'实验室楼号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'LabRoom';
+    END;
+GO
+
+--LabFloor
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'LabFloor' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD LabFloor nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'实验室房间号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'LabFloor';
+    END;
+GO
+
+--LabPhone
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'LabPhone' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD LabPhone nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'实验室电话', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'LabPhone';
+    END;
+GO
+
+--DirectorBadge
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'DirectorBadge' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD DirectorBadge nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'主任工号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'DirectorBadge';
+    END;
+GO
+
+--DirectorName
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'DirectorName' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD DirectorName nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'主任名称', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'DirectorName';
+    END;
+GO
+
+--DirectorMail
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'DirectorMail' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD DirectorMail nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'主任邮箱', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'DirectorMail';
+    END;
+GO
+
+--GroupleaderBadge
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'GroupleaderBadge' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD GroupleaderBadge nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'组长工号', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'GroupleaderBadge';
+    END;
+GO
+
+--GroupleaderName
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'GroupleaderName' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD GroupleaderName nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'组长名称', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'GroupleaderName';
+    END;
+GO
+
+--GroupleaderMail
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[User]')
+                        AND name = 'GroupleaderMail' )
+    BEGIN
+        ALTER TABLE dbo.[User] ADD GroupleaderMail nvarchar(50)  NULL;
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'组长邮箱', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'User',
+            @level2type = N'COLUMN', @level2name = N'GroupleaderMail';
+    END;
+GO
+
+--MplcSample 表添加Smiles类型的结构式字段
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[MplcSample]')
+                        AND name = 'SmilesStructure' )
+    BEGIN
+        ALTER TABLE dbo.MplcSample ADD SmilesStructure NVARCHAR(200) NOT NULL DEFAULT '';
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'Smiles类型的结构式', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'MplcSample',
+            @level2type = N'COLUMN', @level2name = N'SmilesStructure';
+    END;
+GO
+
+--SeparationSampleReg 表添加Smiles类型的结构式字段
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[SeparationSampleReg]')
+                        AND name = 'SmilesStructure' )
+    BEGIN
+        ALTER TABLE dbo.SeparationSampleReg ADD SmilesStructure NVARCHAR(200) NOT NULL DEFAULT '';
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'Smiles类型的结构式', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'SeparationSampleReg',
+            @level2type = N'COLUMN', @level2name = N'SmilesStructure';
+    END;
+GO
+
+--SeparateFeedBack
+IF NOT EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[CrudeSample]')
+                        AND name = 'SeparateFeedBack' )
+    BEGIN
+        ALTER TABLE dbo.CrudeSample ADD SeparateFeedBack nvarchar(200) NULL;
+
+        EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+            @value = N'分离人员反馈信息', @level0type = N'SCHEMA', @level0name = N'dbo',
+            @level1type = N'TABLE', @level1name = N'CrudeSample',
+            @level2type = N'COLUMN', @level2name = N'SeparateFeedBack';
+    END;
+GO
+
+
+
+--News 表SiteId字段修改为非空
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[NmrSample]')
+                        AND name = 'ExperimentCode' )
+    BEGIN
+        ALTER TABLE dbo.NmrSample ALTER COLUMN ExperimentCode nvarchar(50) NULL;
+    END;
+GO
+
+--QueuedEmail 表From字段修改nvarchar
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QueuedEmail]')
+                        AND name = 'From' )
+    BEGIN
+        ALTER TABLE dbo.QueuedEmail ALTER COLUMN [From] nvarchar(1000) not NULL;
+    END;
+GO
+
+--QueuedEmail 表To字段修改nvarchar
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QueuedEmail]')
+                        AND name = 'To' )
+    BEGIN
+        ALTER TABLE dbo.QueuedEmail ALTER COLUMN [To] nvarchar(1000) not NULL;
+    END;
+GO
+
+--QueuedEmail 表cc字段修改nvarchar
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QueuedEmail]')
+                        AND name = 'Cc' )
+    BEGIN
+        ALTER TABLE dbo.QueuedEmail ALTER COLUMN [Cc] nvarchar(1000) NULL;
+    END;
+GO
+
+--QueuedEmail 表Bcc字段修改nvarchar
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QueuedEmail]')
+                        AND name = 'Bcc' )
+    BEGIN
+        ALTER TABLE dbo.QueuedEmail ALTER COLUMN [Bcc] nvarchar(1000) NULL;
+    END;
+GO
+
+--QueuedEmail 表Subject字段修改nvarchar
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QueuedEmail]')
+                        AND name = 'Subject' )
+    BEGIN
+        ALTER TABLE dbo.QueuedEmail ALTER COLUMN [Subject] nvarchar(500) not NULL;
+    END;
+GO
+
+--QueuedEmail 表Body字段修改nvarchar
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QueuedEmail]')
+                        AND name = 'Body' )
+    BEGIN
+        ALTER TABLE dbo.QueuedEmail ALTER COLUMN [Body] nvarchar(max) not NULL;
+    END;
+GO
+
+--QueuedEmail 表QcExpeStatus字段修改nvarchar
+IF EXISTS ( SELECT  1
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID(N'[dbo].[QcSample]')
+                        AND name = 'QcExpeStatus' )
+    BEGIN
+        ALTER TABLE dbo.QcSample ALTER COLUMN QcExpeStatus nvarchar(50) not NULL;
+    END;
+GO
