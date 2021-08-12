@@ -1,0 +1,44 @@
+7z x -y -tzip /Jenkins_Publish/IntegrationService_VersionV1.zip -o"C:\AppTec\IntegrationService"  -aoa
+dotnet FocusSharp.Integration.WebApi.dll --urls http://192.168.135.237:9010
+
+%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c "^&chr(34)^&"%~0"^&chr(34)^&" ::","%cd%","runas",1)(window.close)&&exit
+timeout /T 5
+sc stop AppTec_CommonService
+7z x -y -tzip /Jenkins_Publish/CommonService_VersionV1.zip -o"C:\AppTec\CommonService"  -aoa
+sc start AppTec_CommonService
+
+7z x -y -tzip /Jenkins_Publish/IntegrationService_VersionV1.zip -o"C:\AppTec\IntegrationService"  -aoa
+dotnet FocusSharp.Integration.WebApi.dll --urls http://192.168.135.237:9010
+
+%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c "^&chr(34)^&"%~0"^&chr(34)^&" ::","%cd%","runas",1)(window.close)&&exit
+timeout /T 5
+sc stop AppTec_JobService
+7z x -y -tzip /Jenkins_Publish/JobService_VersionV1.zip -o"C:\AppTec\JobService"  -aoa
+sc start AppTec_JobService
+
+%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c "^&chr(34)^&"%~0"^&chr(34)^&" ::","%cd%","runas",1)(window.close)&&exit
+timeout /T 5
+sc stop AppTec_LoggingService
+7z x -y -tzip /Jenkins_Publish/LoggingService_VersionV1.zip -o"C:\AppTec\LoggingService"  -aoa
+sc start AppTec_LoggingService
+
+7z x -y -tzip /Jenkins_Publish/MessageService_VersionV1.zip -o"C:\AppTec\MessageService"  -aoa
+dotnet FocusSharp.Message.WebHost.dll --urls http://192.168.135.237:9009
+
+%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c "^&chr(34)^&"%~0"^&chr(34)^&" ::","%cd%","runas",1)(window.close)&&exit
+sc stop AppTec_MPLCService
+timeout /T 5
+7z x -y -tzip /Jenkins_Publish/MPLCService_VersionV1.zip -o"C:\AppTec\MPLCService"  -aoa
+sc start AppTec_MPLCService
+
+%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c "^&chr(34)^&"%~0"^&chr(34)^&" ::","%cd%","runas",1)(window.close)&&exit
+sc stop AppTec_MSDService
+timeout /T 5
+7z x -y -tzip /Jenkins_Publish/MSDService_VersionV1.zip -o"C:\AppTec\MSDService"  -aoa
+sc start AppTec_MSDService
+
+%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c "^&chr(34)^&"%~0"^&chr(34)^&" ::","%cd%","runas",1)(window.close)&&exit
+sc stop AppTec_NMRService
+timeout /T 5
+7z x -y -tzip /Jenkins_Publish/NMRService_VersionV1.zip -o"C:\AppTec\NMRService"  -aoa
+sc start AppTec_NMRService
