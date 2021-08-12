@@ -1,0 +1,99 @@
+@echo off
+
+set WORKSPACE="E:\Workspace\Gitlab\AppTec-CSAS-BizServices"
+set VERSION_NUMBER="SIT_5.0.4"
+set PUBLISH_DIR="C:\Jenkins_Publish_Sit"
+
+echo %WORKSPACE%
+echo %VERSION_NUMBER%
+
+cd /d "%WORKSPACE%"
+cd "src\Services\Common\FocusSharp.Common.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\CommonService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\CommonService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\CommonService\*"  -x!*appsettings*.json
+
+cd /d "%WORKSPACE%"
+cd "src\Services\User\FocusSharp.User.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\UserService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\UserService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\UserService\*" -x!*appsettings*.json
+
+cd /d "%WORKSPACE%"
+cd "src\GateWay\api-gateway\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\Api-Gateway
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\ApiGateway_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\Api-Gateway\*" -x!*appsettings*.json
+
+cd /d "%WORKSPACE%"
+cd "src\Services\Integration\FocusSharp.Integration.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\IntegrationService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\IntegrationService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\IntegrationService\*" -x!*appsettings*.json
+
+cd /d "%WORKSPACE%"
+cd "src\Services\Job\FocusSharp.Job.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\JobService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\JobService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\JobService\*" -x!*appsettings*.json
+
+
+cd /d "%WORKSPACE%"
+cd "src\Services\Logging\FocusSharp.Logging.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\LoggingService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\LoggingService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\LoggingService\*" -x!*appsettings*.json
+
+cd "%WORKSPACE%"
+cd /d "src\Services\Message\FocusSharp.Message.WebHost\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\MessageService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\MessageService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\MessageService\*" -x!*appsettings*.json
+
+
+cd /d "%WORKSPACE%"
+cd "src\Services\MPLC\FocusSharp.MPLC.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\MPLCService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\MPLCService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\MPLCService\*" -x!*appsettings*.json
+
+
+cd /d "%WORKSPACE%"
+cd "src\Services\Separation\FocusSharp.Separation.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\SeparationService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\SeparationService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\SeparationService\*" -x!*appsettings*.json
+
+cd /d "%WORKSPACE%"
+cd "src\Services\Third\FocusSharp.Third.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\ThirdService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\ThirdService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\ThirdService\*"  -x!*appsettings*.json
+
+cd /d "%WORKSPACE%"
+cd "src\Services\MSD\FocusSharp.MSD.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\MSDService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\MSDService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\MSDService\*" -x!*appsettings*.json
+
+
+cd /d "%WORKSPACE%"
+cd "src\Services\NMR\FocusSharp.NMR.WebApi\"
+dotnet restore
+dotnet build
+dotnet publish -c:Release -o C:\Jenkins_Publish_Sit\NMRService
+C:\7-Zip\7z.exe a -tzip "%PUBLISH_DIR%\%VERSION_NUMBER%\NMRService_%VERSION_NUMBER%.zip" "C:\Jenkins_Publish_Sit\NMRService\*" -x!*appsettings*.json
+
+pause
+
