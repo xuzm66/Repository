@@ -1,0 +1,113 @@
+
+title Publish
+
+
+::停止站点
+::C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.ApiGateWay.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.OAuth.AuthenticationCenter"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.User.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.Common.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.Logging.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.Job.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.MPLC.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.Third.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.Message.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.Integration.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.Separation.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.MSD.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop site "FocusSharp.NMR.WebApi"
+
+
+::停止应用程序池
+::C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.ApiGateWay.WebApi" 
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.OAuth.AuthenticationCenter"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.User.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.Common.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.Logging.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.Job.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.MPLC.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.Third.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.Message.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.Integration.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.Separation.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.MSD.WebApi"
+C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:"FocusSharp.NMR.WebApi"
+
+::解压服务包
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/SeparationService_%1.zip -o"D:\AppTec-IIS\FocusSharp.Separation.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/IntegrationService_%1.zip -o"D:\AppTec-IIS\FocusSharp.Integration.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/MessageService_%1.zip -o"D:\AppTec-IIS\FocusSharp.Message.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/ThirdService_%1.zip -o"D:\AppTec-IIS\FocusSharp.Third.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/MPLCService_%1.zip -o"D:\AppTec-IIS\FocusSharp.MPLC.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/JobService_%1.zip -o"D:\AppTec-IIS\FocusSharp.Job.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/LoggingService_%1.zip -o"D:\AppTec-IIS\FocusSharp.Logging.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/CommonService_%1.zip -o"D:\AppTec-IIS\FocusSharp.Common.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/UserService_%1.zip -o"D:\AppTec-IIS\FocusSharp.User.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/MSDService_%1.zip -o"D:\AppTec-IIS\FocusSharp.MSD.WebApi"  -aoa
+
+7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/NMRService_%1.zip -o"D:\AppTec-IIS\FocusSharp.NMR.WebApi"  -aoa
+
+:: 7z x -y -tzip /Users/Administrator/Jenkins_Publish_Sit/%1/ApiGateway_%1.zip -o"D:\AppTec-IIS\Api-Gateway"  -aoa
+
+
+::启动应用程序池
+::C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.ApiGateWay.WebApi" 
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.OAuth.AuthenticationCenter"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.User.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.Common.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.Logging.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.Job.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.MPLC.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.Third.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.Message.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.Integration.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.Separation.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.MSD.WebApi"
+C:\Windows\System32\inetsrv\appcmd start apppool /apppool.name:"FocusSharp.NMR.WebApi"
+
+::启动站点
+::C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.ApiGateWay.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.OAuth.AuthenticationCenter"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.User.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.Common.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.Logging.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.Job.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.MPLC.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.Third.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.Message.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.Integration.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.Separation.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.MSD.WebApi"
+C:\Windows\System32\inetsrv\appcmd start site "FocusSharp.NMR.WebApi"
+
+echo.
+::初始化调用
+::start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9001/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9002/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9003/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9004/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9005/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9006/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9007/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9008/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9009/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9010/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9011/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9012/swagger/index.htm
+start D:\AppTec-IIS\Deploy-IIS\curl-7.64.1\I386\CURL.EXE -G http://localhost:9013/swagger/index.htm
+echo.
+
+pause
+
+exit
+
+
